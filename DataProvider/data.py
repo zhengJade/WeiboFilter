@@ -21,11 +21,12 @@ class DataFilter(object):
         self.csv_test = test_name
         cov_data = pd.read_csv(data_path, engine = 'python', encoding = 'utf-8')
         cov_data.dropna(axis=0,how='any', inplace = True)
+        cov_data = cov_data[:20000]
         dim = cov_data.shape[0]
 
         self.data = pd.DataFrame(columns = ['text', 'label'])
         line = 0
-        for cov_line, cov in tqdm(cov_data.iterrows(), desc='处理进度', total=dim):
+        for cov_line, cov in tqdm(cov_data.iterrows(), desc='处理进度', total=dim, ncols = 120):
             text = cov['微博中文内容']
             label = cov['情感倾向']
             if label not in ['-1', '0', '1']:
@@ -115,4 +116,4 @@ class DataFilter(object):
 
 data = DataFilter('~/train_dataset/nCoV_100k_train.labled.csv', 'CoV_train.csv', 'CoV_test.csv')
 
-data.text_spile(9.5, 0.5)
+data.text_spile(9, 1)
