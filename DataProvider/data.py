@@ -114,11 +114,12 @@ class DataFilter(object):
         test.to_csv(self.csv_test)
 
     def save_csv(self):
-        print('>'*50, self.save_csv, '已保存')
+        print('>'*50, self.save_name, '已保存')
         self.data.to_csv(self.csv_name)
 
 
 def main():
+    '''
     parser = argparse.ArgumentParser()
     parser.add_argument('--spile', default='spile', type=str, help='是否直接切割数据集')
     parser.add_argument('--dataset_name', default='CoVData.csv', type=str)
@@ -129,6 +130,9 @@ def main():
         data.save_csv()
     else:
         data.text_spile(9, 1)
+    '''
+    data = pd.read_csv('CoV_test.csv', engine = 'python', encoding = 'utf-8')
+    print(data)
 
 
 if __name__ == '__main__':
