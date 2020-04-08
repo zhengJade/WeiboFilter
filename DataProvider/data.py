@@ -2,6 +2,7 @@ import pandas as pd
 import encode
 from tqdm import tqdm
 import re
+import argparse
 
 '''
 trainPath = "~/train_dataset/nCoV_100k_train.labled.csv"        
@@ -16,12 +17,13 @@ test_data.to_csv('nCoV_100k_test.labled.csv')
 print(test_data)
 '''
 class DataFilter(object):
-    def __init__(self, data_path: str, train_name: str, test_name: str):
+    def __init__(self, data_path: str, train_name: str, test_name: str, csv_name: str):
         self.csv_train = train_name
         self.csv_test = test_name
+        self.csv_name = csv_name
         cov_data = pd.read_csv(data_path, engine = 'python', encoding = 'utf-8')
         cov_data.dropna(axis=0,how='any', inplace = True)
-        cov_data = cov_data[:20000]
+        cov_data = cov_data[:10000]
         dim = cov_data.shape[0]
 
         self.data = pd.DataFrame(columns = ['text', 'label'])
@@ -112,8 +114,22 @@ class DataFilter(object):
         test.to_csv(self.csv_test)
 
     def save_csv(self):
+        print('>'*50, self.save_csv, '已保存')
         self.data.to_csv(self.csv_name)
 
-data = DataFilter('~/train_dataset/nCoV_100k_train.labled.csv', 'CoV_train.csv', 'CoV_test.csv')
 
-data.text_spile(9, 1)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--spile', default='spile', type=str, help='是否直接切割数据集')
+    parser.add_argument('--dataset_name', default='CoVData.csv', type=str)
+    opt = parser.parse_args()
+    print(opt.spile)
+    data = DataFilter('~/train_dataset/nCoV_100k_train.labled.csv', 'CoV_train.csv', 'CoV_test.csv', 'CoVData.csv')
+    if opt.spile == 'spile':
+        data.save_csv()
+    else:
+        data.text_spile(9, 1)
+
+
+if __name__ == '__main__':
+    main()
