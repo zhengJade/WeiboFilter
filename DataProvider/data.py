@@ -23,7 +23,6 @@ class DataFilter(object):
         self.csv_name = csv_name
         cov_data = pd.read_csv(data_path, engine = 'python', encoding = 'utf-8')
         cov_data.dropna(axis=0,how='any', inplace = True)
-        cov_data = cov_data[:10000]
         dim = cov_data.shape[0]
 
         self.data = pd.DataFrame(columns = ['text', 'label'])
@@ -119,20 +118,19 @@ class DataFilter(object):
 
 
 def main():
-    '''
     parser = argparse.ArgumentParser()
     parser.add_argument('--spile', default='spile', type=str, help='是否直接切割数据集')
     parser.add_argument('--dataset_name', default='CoVData.csv', type=str)
+    parser.add_argument('--dateset_path', default='~/train_dataset/nCoV_100k_train.labled.csv', type=str)
+    parser.add_argument('--date_save_name', default='CoVData.csv', type=str)
     opt = parser.parse_args()
     print(opt.spile)
-    data = DataFilter('~/train_dataset/nCoV_100k_train.labled.csv', 'CoV_train.csv', 'CoV_test.csv', 'CoVData.csv')
+    data = DataFilter(opt.dateset_path, 'CoV_train.csv', 'CoV_test.csv', opt.date_save_name)
     if opt.spile == 'spile':
         data.save_csv()
     else:
         data.text_spile(9, 1)
-    '''
     data = pd.read_csv('CoV_test.csv', engine = 'python', encoding = 'utf-8')
-    print(data)
 
 
 if __name__ == '__main__':
