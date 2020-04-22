@@ -16,7 +16,7 @@ train_data.to_csv('nCoV_100k_train.labled.csv')
 test_data.to_csv('nCoV_100k_test.labled.csv')
 print(test_data)
 '''
-class DataFilter(object):
+class DataFilter():
     def __init__(self, data_path: str, train_name: str, test_name: str, csv_name: str):
         self.csv_train = train_name
         self.csv_test = test_name
@@ -25,19 +25,22 @@ class DataFilter(object):
         cov_data.dropna(axis=0,how='any', inplace = True)
         dim = cov_data.shape[0]
 
-        self.data = pd.DataFrame(columns = ['text', 'label'])
+        self.data = pd.DataFrame(columns = ['text', 'time'])
         line = 0
         for cov_line, cov in tqdm(cov_data.iterrows(), desc='处理进度', total=dim, ncols = 120):
-            text = cov['微博中文内容']
-            label = cov['情感倾向']
+            #text = cov_line['发布位置']
+            print(cov)
+            label = cov['发布时间']
+            '''
             if label not in ['-1', '0', '1']:
                 continue
+            '''
             forward_text = self.forward_filter(text)
             title_text = self.title_filter(forward_text)
             other_text = self.other_filter(title_text)
             if other_text == '#':
                 continue
-            self.data.loc[line] = {'text': other_text, 'label': label}
+            self.data.loc[line] = {'text': other_text, 'time': label,}
             line += 1
 
     def forward_filter(self, text: str):
@@ -124,8 +127,7 @@ def main():
     parser.add_argument('--dateset_path', default='~/train_dataset/nCoV_100k_train.labled.csv', type=str)
     parser.add_argument('--date_save_name', default='CoVData.csv', type=str)
     opt = parser.parse_args()
-    print(opt.spile)
-    data = DataFilter(opt.dateset_path, 'CoV_train.csv', 'CoV_test.csv', opt.date_save_name)
+    data = DataFilter(opt.dateset_path, './datasets/CoV_train.csv', './datasets/CoV_test.csv', opt.date_save_name)
     if opt.spile == 'spile':
         data.save_csv()
     else:
